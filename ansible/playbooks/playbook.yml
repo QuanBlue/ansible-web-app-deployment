@@ -1,0 +1,28 @@
+---
+- hosts: alert_manager
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+     - alert_manager
+
+- hosts: node_exporter
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+     - node_exporter
+
+- hosts: prometheus
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+     - prometheus
+
+- hosts: grafana
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+     - grafana

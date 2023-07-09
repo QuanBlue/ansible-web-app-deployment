@@ -1,0 +1,9 @@
+FROM ubuntu:18.04
+
+WORKDIR /root
+
+RUN apt update -y \ 
+   && apt install openssh-server -y
+
+ENTRYPOINT service ssh restart && bash  
+   

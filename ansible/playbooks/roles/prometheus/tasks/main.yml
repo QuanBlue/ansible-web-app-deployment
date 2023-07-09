@@ -1,0 +1,10 @@
+---
+- name: ansible facts
+  debug:
+     msg:
+        - " 'ansible_architecture'  is {{ ansible_architecture }} "
+        - " 'ansible_apparmor' is {{ ansible_apparmor }} "
+
+- name: Print variables
+  debug:
+     msg: "{{ common_variable }}"

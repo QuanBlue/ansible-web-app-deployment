@@ -1,0 +1,17 @@
+FROM alpine:latest
+
+RUN apk update
+RUN apk add ansible openssh
+
+WORKDIR "/root"
+
+RUN mkdir -p .ssh \
+   && chmod 700 .ssh \
+   && ssh-keygen -t rsa -N "" -f .ssh/id_rsa \
+   && chmod 600 .ssh/id_rsa
+
+# copy public key to share_dir
+RUN mkdir share_dir \
+   && cp .ssh/id_rsa.pub share_dir/authorized_keys
+
+CMD [ "/bin/sh" ]

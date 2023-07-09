@@ -1,0 +1,1 @@
+common_variable: "this is a variable in './ansible/playbook/roles/common/vars/main.yml'"
