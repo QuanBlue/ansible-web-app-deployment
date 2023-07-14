@@ -1,0 +1,52 @@
+---
+# https://grafana.com/docs/grafana/latest/setup-grafana/installation/debian/
+- name: Install Grafana
+  become: true
+  become_user: root
+  block:
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - software-properties-common
+        state: present
+
+    - name: Add Grafana repository signing key
+      apt_key:
+        url: https://apt.grafana.com/gpg.key
+        keyring: /usr/share/keyrings/grafana.key
+        state: present
+
+    - name: Add Grafana repository
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/grafana.key] https://apt.grafana.com stable main"
+        state: present
+        filename: grafana
+
+    - name: Install Grafana
+      apt:
+        name: grafana
+        state: present
+
+- name: Configure Grafana
+  template:
+    src: grafana.ini.j2
+    dest: /etc/grafana/grafana.ini
+  notify: restart_grafana_server
+
+- name: Flush Handlers
+  meta: flush_handlers
+
+- name: "Wait for service UP"
+  uri:
+    url: http://127.0.0.1:{{ port }}
+    status_code: 200
+  register: _grafana_server_status
+  until: _grafana_server_status.status == 200
+  retries: 120
+  delay: 1
+
+- name: Change admin password for Grafana GUI
+  shell: "grafana-cli admin reset-admin-password {{ grafana_admin_password }}"
+  register: _grafana_admin_password
+  until: _grafana_admin_password.rc == 0

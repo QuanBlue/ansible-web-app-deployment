@@ -1,0 +1,4 @@
+- name: Restart Grafana server
+  shell: "service grafana-server restart"
+  listen: restart_grafana_server
+  failed_when: false # this handler alway success

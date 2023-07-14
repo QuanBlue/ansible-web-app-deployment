@@ -1,12 +1,11 @@
 #!/bin/bash
 
-# Load environment variables
-source .env
-
 NETWORK=${NETWORK:-ansible-net}
-REMOTE_MACHINE=(grafana prometheus node_exporter alert_manager)
+# REMOTE_MACHINE=(grafana prometheus node_exporter alert_manager)
+REMOTE_MACHINE=(grafana)
 INVENTORY="./ansible/inventories/hosts.ini"
 CONTROLLER_PATH_TO_INVNETORY="/etc/ansible/inventories/hosts.ini"
+CONTROLLER_PATH_TO_PLAYBOOK="/etc/ansible/playbooks/playbook.yml"
 
 # Function to print messages in pretty format
 info() {
@@ -73,8 +72,9 @@ info "Complete!"
 for machine in ${REMOTE_MACHINE[@]}; do
    info "Creating ${machine} VPS... "
 
-   docker run -itd \
-      --name=${machine} \
+   # TODO: update publsh port respectily with machine
+   docker run -itd --privileged --name=${machine} \
+      --publish=3000:3000 \
       --network=${NETWORK} \
       --hostname=${machine} \
       ubuntu-node:18.04
@@ -127,4 +127,16 @@ info "Complete!"
 info header "List all hosts Inventory file"
 info "Listing..."
 docker exec -it ansible-controller sh -c "ansible-inventory -i $CONTROLLER_PATH_TO_INVNETORY --list"
+info "Complete!"
+
+# Test ping to Grafana host
+info header "Test ping to Grafana host"
+info "Checking..."
+docker exec -it ansible-controller sh -c "ansible -i $CONTROLLER_PATH_TO_INVNETORY -m ping grafana"
+info "Complete!"
+
+# Check connection from Controller to node (client)
+info header "Play playbook"
+info "Playing..."
+docker exec -it ansible-controller sh -c "ansible-playbook -i $CONTROLLER_PATH_TO_INVNETORY $CONTROLLER_PATH_TO_PLAYBOOK"
 info "Complete!"
