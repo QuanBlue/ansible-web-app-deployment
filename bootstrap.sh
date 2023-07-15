@@ -1,8 +1,19 @@
 #!/bin/bash
 
+# declare -A MACHINE_PORT_MAPPING=(
+#    # [<machine>]=<port>
+#    [grafana]=3000
+#    [prometheus]=9090
+#    [node_exporter]=9094
+#    [alert_manager]=9093
+# )
+
+declare -A MACHINE_PORT_MAPPING=(
+   # [<machine>]=<port>
+   [prometheus]=9090
+)
+
 NETWORK=${NETWORK:-ansible-net}
-# REMOTE_MACHINE=(grafana prometheus node_exporter alert_manager)
-REMOTE_MACHINE=(grafana)
 INVENTORY="./ansible/inventories/hosts.ini"
 CONTROLLER_PATH_TO_INVNETORY="/etc/ansible/inventories/hosts.ini"
 CONTROLLER_PATH_TO_PLAYBOOK="/etc/ansible/playbooks/playbook.yml"
@@ -69,12 +80,13 @@ docker build -t ubuntu-node:18.04 -f ./dockerfile/Dockerfile-remote-machine .
 info "Complete!"
 
 # Create REMOTE MACHINE container
-for machine in ${REMOTE_MACHINE[@]}; do
+
+for machine in ${!MACHINE_PORT_MAPPING[@]}; do
    info "Creating ${machine} VPS... "
 
-   # TODO: update publsh port respectily with machine
-   docker run -itd --privileged --name=${machine} \
-      --publish=3000:3000 \
+   docker run -itd \
+      --name=${machine} \
+      --publish=${MACHINE_PORT_MAPPING[$machine]}:${MACHINE_PORT_MAPPING[$machine]} \
       --network=${NETWORK} \
       --hostname=${machine} \
       ubuntu-node:18.04

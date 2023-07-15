@@ -13,16 +13,16 @@
 #   roles:
 #      - node_exporter
 
-# - hosts: prometheus
-#   become: yes
-#   become_user: root
-#   become_method: sudo
-#   roles:
-#      - prometheus
-
-- hosts: grafana
+- hosts: prometheus
   become: yes
   become_user: root
   become_method: sudo
   roles:
-    - grafana
+    - prometheus
+# --- DONE ---
+# - hosts: grafana
+#   become: yes
+#   become_user: root
+#   become_method: sudo
+#   roles:
+#     - grafana
