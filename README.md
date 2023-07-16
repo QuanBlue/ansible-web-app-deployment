@@ -4,7 +4,7 @@
   <b>Ansible VPS Generator</b>
 </h1>
 
-<p align="center">Helping you auto create Ansible VPS and Ubuntu VPSs  in multi base: EC2, VW, Container.., connect them and auto generate Inventory file</p>
+<p align="center">Helping you auto create Ansible VPS and Ubuntu VPSs  in multi base: EC2, VMachine, Container.., connect them and auto generate Inventory file</p>
 
 <!-- Badges -->
 <p align="center">

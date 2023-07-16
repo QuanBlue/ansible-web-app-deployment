@@ -7,11 +7,12 @@
 #    [node_exporter]=9094
 #    [alert_manager]=9093
 #    [frontend]=3000
+#    [backend]=5000
 # )
 
 declare -A MACHINE_PORT_MAPPING=(
    # [<machine>]=<port>
-   [frontend]=3000
+   [backend]=5000
 )
 
 NETWORK=${NETWORK:-ansible-net}

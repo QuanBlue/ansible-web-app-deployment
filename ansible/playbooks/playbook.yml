@@ -13,15 +13,23 @@
 #   roles:
 #     - node_exporter
 
-- hosts: frontend
+- hosts: backend
   become: yes
   become_user: root
   become_method: sudo
   roles:
-    - frontend
+    - backend
 # ------------------
 # ------ DONE ------
 # ------------------
+
+## TODO: merge front end and backend run in 1 role "auto setup"
+# - hosts: frontend
+#   become: yes
+#   become_user: root
+#   become_method: sudo
+#   roles:
+#     - frontend
 
 # - hosts: prometheus
 #   become: yes
