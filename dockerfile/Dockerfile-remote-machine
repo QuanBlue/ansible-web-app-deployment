@@ -2,8 +2,11 @@ FROM ubuntu:20.04
 
 WORKDIR /root
 
-RUN apt update -y \ 
+RUN apt update -y \
    && apt install sudo -y \
    && apt install openssh-server -y
 
-ENTRYPOINT service ssh restart && bash
+ADD ./dockerfile/entrypoint.sh /root/
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT [ "/root/entrypoint.sh" ]

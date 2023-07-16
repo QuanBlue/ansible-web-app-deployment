@@ -6,11 +6,12 @@
 #    [prometheus]=9090
 #    [node_exporter]=9094
 #    [alert_manager]=9093
+#    [frontend]=3000
 # )
 
 declare -A MACHINE_PORT_MAPPING=(
    # [<machine>]=<port>
-   [prometheus]=9090
+   [frontend]=3000
 )
 
 NETWORK=${NETWORK:-ansible-net}
@@ -50,7 +51,7 @@ info header "Remove old containers"
 info "Removing..."
 echo
 docker rm -f ansible-controller
-for machine in ${REMOTE_MACHINE[@]}; do
+for machine in ${!MACHINE_PORT_MAPPING[@]}; do
    docker rm -f $machine
 done
 info "Complete!"

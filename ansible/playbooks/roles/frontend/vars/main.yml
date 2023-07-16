@@ -1,0 +1,5 @@
+---
+# vars file for frontend
+repo_name: mearn-portfolio
+nodejs_version: 18
+port: 3000

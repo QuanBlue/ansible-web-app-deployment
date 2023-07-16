@@ -11,15 +11,24 @@
 #   become_user: root
 #   become_method: sudo
 #   roles:
-#      - node_exporter
+#     - node_exporter
 
-- hosts: prometheus
+- hosts: frontend
   become: yes
   become_user: root
   become_method: sudo
   roles:
-    - prometheus
-# --- DONE ---
+    - frontend
+# ------------------
+# ------ DONE ------
+# ------------------
+
+# - hosts: prometheus
+#   become: yes
+#   become_user: root
+#   become_method: sudo
+#   roles:
+#     - prometheus
 # - hosts: grafana
 #   become: yes
 #   become_user: root
