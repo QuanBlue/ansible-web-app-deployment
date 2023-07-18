@@ -1,0 +1,37 @@
+---
+- name: clone a github repository
+  block:
+    - name: install git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+    - name: clone the repo
+      git:
+        repo: https://github.com/QuanBlue/{{repo_name}}.git
+        dest: /root/{{repo_name}}
+        clone: yes
+        update: yes
+
+- name: install dependencies
+  npm:
+    path: "{{work_dir}}"
+
+- name: rename '.env.example' to '.env'
+  command: mv {{work_dir}}/.env.example {{work_dir}}/.env
+
+- name: start the application
+  command:
+    chdir: "{{work_dir}}"
+    cmd: npm start
+  async: 1000
+  poll: 0
+
+- name: "wait for service up"
+  uri:
+    url: "{{testing_url}}"
+    status_code: 200
+  register: _res_status
+  until: _res_status.status == 200
+  retries: 120
+  delay: 1

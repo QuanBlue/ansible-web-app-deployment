@@ -12,7 +12,11 @@
 
 declare -A MACHINE_PORT_MAPPING=(
    # [<machine>]=<port>
+   # [prometheus]=9090
+   # [grafana]=4000
+   [frontend]=3000
    [backend]=5000
+   # [node_exporter]=9100
 )
 
 NETWORK=${NETWORK:-ansible-net}

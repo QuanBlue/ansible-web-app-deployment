@@ -1,0 +1,46 @@
+---
+# tasks file for node_exporter
+- name: Install Node-exporter
+  block:
+    - name: Download Node Exporter binary
+      unarchive:
+        src: "https://github.com/prometheus/node_exporter/releases/download/v{{ version }}/node_exporter-{{ version }}.linux-amd64.tar.gz"
+        dest: /tmp/
+        remote_src: yes
+
+    - name: Install Node Exporter - Copy Node Exporter file to bin
+      copy:
+        src: "/tmp/node_exporter-{{ version }}.linux-amd64/node_exporter"
+        dest: "/usr/local/bin/node_exporter"
+        mode: 0755
+        remote_src: yes
+
+    - name: Delete Node Exporter tmp folder
+      file:
+        path: "/tmp/node_exporter-{{ version }}.linux-amd64"
+        state: absent
+        force: yes
+
+- name: Check Node-exporter version
+  block:
+    - name: Get Node-exporter version
+      shell: "node_exporter --version"
+      register: _version_output
+
+    - name: Print version
+      debug:
+        msg: "Node-exporter version: {{ _version_output.stdout }}"
+
+- name: Start Node-exporter
+  shell: "node_exporter"
+  async: 5 # let it run in background
+  poll: 0 # don't wait for it to finish
+
+- name: "Wait for service UP"
+  uri:
+    url: http://127.0.0.1:{{ port }}/metrics
+    status_code: 200
+  register: _node_exporter_server_status
+  until: _node_exporter_server_status.status == 200
+  retries: 120
+  delay: 1

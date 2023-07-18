@@ -6,6 +6,10 @@
 #   roles:
 #      - alert_manager
 
+# ------------------
+# ------ DONE ------
+# ------------------
+
 # - hosts: node_exporter
 #   become: yes
 #   become_user: root
@@ -17,26 +21,32 @@
   become: yes
   become_user: root
   become_method: sudo
+  vars:
+    - port: 5000
+    - work_dir: /root/{{repo_name}}
+    - testing_url: http://localhost:{{ port }}/metrics
   roles:
-    - backend
-# ------------------
-# ------ DONE ------
-# ------------------
+    - nodejs
+    - application
 
-## TODO: merge front end and backend run in 1 role "auto setup"
-# - hosts: frontend
-#   become: yes
-#   become_user: root
-#   become_method: sudo
-#   roles:
-#     - frontend
-
+- hosts: frontend
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars:
+    - port: 3000
+    - work_dir: /root/{{repo_name}}/client
+    - testing_url: http://localhost:{{ port }}
+  roles:
+    - nodejs
+    - application
 # - hosts: prometheus
 #   become: yes
 #   become_user: root
 #   become_method: sudo
 #   roles:
 #     - prometheus
+
 # - hosts: grafana
 #   become: yes
 #   become_user: root

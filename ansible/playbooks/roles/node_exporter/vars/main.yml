@@ -1,0 +1,4 @@
+---
+# vars file for node_exporter
+version: 1.6.1
+port: 9100
