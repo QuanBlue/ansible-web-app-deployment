@@ -1,50 +1,14 @@
-##################### Grafana Configuration Example #####################
-#
-# Everything has defaults so you only need to uncomment things you want to
-# change
+#################################### Dashboards ##################
+[dashboards]
+# Path to the default home dashboard
+default_home_dashboard_path=/etc/grafana/provisioning/dashboards/dashboard.json
 
-
-#################################### Paths ####################################
-[paths]
-# Path to where grafana can store temp files, sessions, and the sqlite3 db (if that is used)
-;data = /var/lib/grafana
-
-# Temporary files in `data` directory older than given duration will be removed
-;temp_data_lifetime = 24h
-
-# Directory where grafana can store logs
-;logs = /var/log/grafana
-
-# Directory where grafana will automatically scan and look for plugins
-;plugins = /var/lib/grafana/plugins
-
-# folder that contains provisioning config files that grafana will apply on startup and while running.
-;provisioning = conf/provisioning
 
 #################################### Server ####################################
 [server]
 # The http port  to use
-http_port = ${port}
+http_port = {{ port }}
 
-# The public facing domain name used to access grafana from a browser
-;domain = localhost
-
-#################################### Database ####################################
-[database]
-# You can configure the database connection by specifying type, host, name, user and password
-# as separate properties or as on string using the url properties.
-
-# Either "mysql", "postgres" or "sqlite3", it's your choice
-;type = sqlite3
-;host = 127.0.0.1:3306
-;name = grafana
-;user = root
-# If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
-;password =
-
-# Use either URL or the previous fields to configure the database
-# Example: mysql://user:secret@host:port/database
-;url =
 
 #################################### Anonymous Auth ##########################
 [auth.anonymous]

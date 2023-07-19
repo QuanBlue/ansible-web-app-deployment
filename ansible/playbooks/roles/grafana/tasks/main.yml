@@ -5,34 +5,57 @@
   become_user: root
   block:
     - name: Install required packages
+      register: task_result
       apt:
         name:
           - apt-transport-https
           - software-properties-common
         state: present
+      until: task_result is succeeded
+      retries: 5
+      delay: 10
 
     - name: Add Grafana repository signing key
+      register: task_result
       apt_key:
         url: https://apt.grafana.com/gpg.key
         keyring: /usr/share/keyrings/grafana.key
         state: present
+      until: task_result is succeeded
+      retries: 5
+      delay: 10
 
     - name: Add Grafana repository
+      register: task_result
       apt_repository:
         repo: "deb [signed-by=/usr/share/keyrings/grafana.key] https://apt.grafana.com stable main"
         state: present
         filename: grafana
+      until: task_result is succeeded
+      retries: 5
+      delay: 10
 
     - name: Install Grafana
+      register: task_result
       apt:
         name: grafana
         state: present
+      until: task_result is succeeded
+      retries: 5
+      delay: 10
 
 - name: Configure Grafana
-  template:
-    src: grafana.ini.j2
-    dest: /etc/grafana/grafana.ini
-  notify: restart_grafana_server
+  block:
+    - name: Setup dashboard
+      copy:
+        src: "dashboard.json"
+        dest: "/etc/grafana/provisioning/dashboards/dashboard.json"
+
+    - name: Configure Grafana
+      template:
+        src: grafana.ini.j2
+        dest: /etc/grafana/grafana.ini
+      notify: restart_grafana_server
 
 - name: Flush Handlers
   meta: flush_handlers
