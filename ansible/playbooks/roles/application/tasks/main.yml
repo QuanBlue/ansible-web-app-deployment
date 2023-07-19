@@ -2,20 +2,33 @@
 - name: clone a github repository
   block:
     - name: install git
+      register: task_result
       apt:
         name: git
         state: present
         update_cache: yes
+      until: task_result is succeeded
+      retries: 5
+      delay: 10
+
     - name: clone the repo
+      register: task_result
       git:
         repo: https://github.com/QuanBlue/{{repo_name}}.git
         dest: /root/{{repo_name}}
         clone: yes
         update: yes
+      until: task_result is succeeded
+      retries: 5
+      delay: 10
 
 - name: install dependencies
+  register: task_result
   npm:
     path: "{{work_dir}}"
+  until: task_result is succeeded
+  retries: 5
+  delay: 10
 
 - name: rename '.env.example' to '.env'
   command: mv {{work_dir}}/.env.example {{work_dir}}/.env
@@ -23,7 +36,7 @@
 - name: start the application
   command:
     chdir: "{{work_dir}}"
-    cmd: npm start
+    cmd: watch -n 0.1 "npm start" & # restart the process if/when it stops
   async: 1000
   poll: 0
 
@@ -33,5 +46,5 @@
     status_code: 200
   register: _res_status
   until: _res_status.status == 200
-  retries: 120
+  retries: 60
   delay: 1

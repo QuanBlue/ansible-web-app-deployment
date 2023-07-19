@@ -1,9 +1,13 @@
 ---
 - name: Install prerequisites
+  register: task_result
   apt:
     name:
       - gnupg
     state: present
+  until: task_result is succeeded
+  retries: 5
+  delay: 10
 
 - name: Install nodejs LTS gpg key
   register: task_result
@@ -15,12 +19,20 @@
   delay: 10
 
 - name: Install nodejs LTS repos
+  register: task_result
   apt_repository:
     repo: "deb https://deb.nodesource.com/node_{{ nodejs_version }}.x {{ ansible_distribution_release }} main"
     state: present
     update_cache: yes
+  until: task_result is succeeded
+  retries: 5
+  delay: 10
 
 - name: Install the nodejs
+  register: task_result
   apt:
     name: nodejs
     state: present
+  until: task_result is succeeded
+  retries: 5
+  delay: 10

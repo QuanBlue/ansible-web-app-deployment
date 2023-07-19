@@ -12,11 +12,15 @@
 
 declare -A MACHINE_PORT_MAPPING=(
    # [<machine>]=<port>
-   # [prometheus]=9090
-   # [grafana]=4000
    [frontend]=3000
    [backend]=5000
-   # [node_exporter]=9100
+   [grafana]=4000
+   [prometheus]=9090
+)
+
+NODE_EXPORTER_MACHINES=(
+   backend
+   frontend
 )
 
 NETWORK=${NETWORK:-ansible-net}
@@ -86,9 +90,16 @@ docker build -t ubuntu-node:18.04 -f ./dockerfile/Dockerfile-remote-machine .
 info "Complete!"
 
 # Create REMOTE MACHINE container
-
 for machine in ${!MACHINE_PORT_MAPPING[@]}; do
    info "Creating ${machine} VPS... "
+
+   eval "machine_publish_ports=${MACHINE_PORT_MAPPING[$machine]}"
+
+   # map all port
+   # machine_publish_port_mapping=""
+   # for port in ${machine_publish_ports[@]}; do
+   #    machine_publish_port_mapping+="--publish=${port}:${port} "
+   # done
 
    docker run -itd \
       --name=${machine} \
@@ -116,6 +127,7 @@ info "Complete!"
 info header "Generate inventory content"
 info "Generating..."
 inventory=""
+node_exporter_inventory="[node_exporter]"
 for element in "${ipv4_array[@]}"; do
    split_string "$element" ":" machine_props
    split_string "${machine_props[1]}" "/" ip
@@ -126,6 +138,13 @@ for element in "${ipv4_array[@]}"; do
    inventory+="[${machine_name}]"
    inventory+="\n${machine_name}_host ansible_host=${machine_ip}\n\n"
 
+   echo "machine_name: ${machine_name}"
+   echo "machine_ip: ${machine_ip}"
+   if [ "${machine_name}" == "backend" ] || [ "${machine_name}" == "frontend" ]; then
+      echo "true"
+      node_exporter_inventory+="\n${machine_name}_host ansible_host=${machine_ip}"
+   fi
+
    if [ ${machine_name} != "ansible" ]; then
       # check connection from Controller to Nodes
       info "Checking connection from Controller to ${machine_name}..."
@@ -133,6 +152,7 @@ for element in "${ipv4_array[@]}"; do
       info "Complete!"
    fi
 done
+inventory+=$node_exporter_inventory
 info "Complete!"
 
 # Write inventory file

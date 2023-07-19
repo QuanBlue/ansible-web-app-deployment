@@ -3,10 +3,14 @@
 - name: Install Node-exporter
   block:
     - name: Download Node Exporter binary
+      register: task_result
       unarchive:
         src: "https://github.com/prometheus/node_exporter/releases/download/v{{ version }}/node_exporter-{{ version }}.linux-amd64.tar.gz"
         dest: /tmp/
         remote_src: yes
+      until: task_result is succeeded
+      retries: 5
+      delay: 10
 
     - name: Install Node Exporter - Copy Node Exporter file to bin
       copy:
@@ -32,15 +36,15 @@
         msg: "Node-exporter version: {{ _version_output.stdout }}"
 
 - name: Start Node-exporter
-  shell: "node_exporter"
+  shell: node_exporter --web.listen-address=:{{ port }} & # restart the process if/when it stops
   async: 5 # let it run in background
   poll: 0 # don't wait for it to finish
 
 - name: "Wait for service UP"
   uri:
-    url: http://127.0.0.1:{{ port }}/metrics
+    url: http://{{ server_domain }}:{{ port }}/metrics
     status_code: 200
   register: _node_exporter_server_status
   until: _node_exporter_server_status.status == 200
-  retries: 120
+  retries: 60
   delay: 1

@@ -6,50 +6,46 @@
 #   roles:
 #      - alert_manager
 
-# ------------------
-# ------ DONE ------
-# ------------------
-
-# - hosts: node_exporter
-#   become: yes
-#   become_user: root
-#   become_method: sudo
-#   roles:
-#     - node_exporter
-
 - hosts: backend
   become: yes
   become_user: root
   become_method: sudo
   vars:
-    - port: 5000
-    - work_dir: /root/{{repo_name}}
-    - testing_url: http://localhost:{{ port }}/metrics
+    - app_port: 5000
+    - server_domain: "{{ hostvars[groups['backend'][0]]['ansible_host'] }}"
+    - work_dir: /root/{{ repo_name }}
+    - testing_url: http://{{ server_domain }}:{{ app_port }}/metrics
   roles:
     - nodejs
     - application
+    - node_exporter
 
 - hosts: frontend
+  gather_facts: true
   become: yes
   become_user: root
   become_method: sudo
   vars:
-    - port: 3000
+    - app_port: 3000
+    - server_domain: "{{ hostvars[groups['frontend'][0]]['ansible_host'] }}"
     - work_dir: /root/{{repo_name}}/client
-    - testing_url: http://localhost:{{ port }}
+    - testing_url: http://{{ server_domain }}:{{ app_port }}
   roles:
     - nodejs
     - application
-# - hosts: prometheus
-#   become: yes
-#   become_user: root
-#   become_method: sudo
-#   roles:
-#     - prometheus
+    - node_exporter
 
-# - hosts: grafana
-#   become: yes
-#   become_user: root
-#   become_method: sudo
-#   roles:
-#     - grafana
+- hosts: prometheus
+  gather_facts: true
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - prometheus
+
+- hosts: grafana
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - grafana

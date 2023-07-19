@@ -36,10 +36,14 @@
 - name: Install Prometheus
   block:
     - name: Download Prometheus binary
+      register: task_result
       unarchive:
         src: "https://github.com/prometheus/prometheus/releases/download/v{{ version }}/prometheus-{{ version }}.linux-amd64.tar.gz"
         dest: /tmp/
         remote_src: yes
+      until: task_result is succeeded
+      retries: 5
+      delay: 10
 
     - name: Install Prometheus - Copy Prometheus file to bin
       copy:
@@ -74,7 +78,7 @@
         dest: /etc/prometheus/prometheus.yml
 
     - name: Specify path to config file
-      shell: "prometheus --config.file=/etc/prometheus/prometheus.yml"
+      shell: prometheus --config.file=/etc/prometheus/prometheus.yml & # restart the process if/when it stops
       async: 5 # let it run in background
       poll: 0 # don't wait for it to finish
 
@@ -89,5 +93,5 @@
     status_code: 200
   register: _prometheus_server_status
   until: _prometheus_server_status.status == 200
-  retries: 120
+  retries: 60
   delay: 1

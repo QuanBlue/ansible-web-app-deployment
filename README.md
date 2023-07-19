@@ -66,10 +66,10 @@ Before proceeding with the installation and usage of this project, ensure that y
 # :world_map: Roadmap
 
 - [ ] Deploy
-  - [ ] Application
+  - [x] Application
   - [ ] Deploy monitoring and logging components
 - [ ] Deploy Application on
-  - [ ] Docker - Container
+  - [x] Docker - Container
   - [ ] Vagrant - VWare
   - [ ] AWS - EC2
 
