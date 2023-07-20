@@ -1,13 +1,13 @@
 ---
 # https://prometheus.io/docs/prometheus/latest/installation/
-- name: Pre-install Prometheus
+- name: pre-install prometheus
   become: true
   block:
-    - name: Creating prometheus user group
+    - name: creating prometheus user group
       group: name="{{groupId}}"
       become: true
 
-    - name: Creating prometheus user
+    - name: creating prometheus user
       user:
         name: "{{userId}}"
         group: "{{groupId}}"
@@ -17,7 +17,7 @@
         createhome: "no"
         state: present
 
-    - name: Create data directory
+    - name: create data directory
       file:
         path: "/data/prometheus/"
         state: directory
@@ -25,7 +25,7 @@
         group: "{{groupId}}"
         mode: 0755
 
-    - name: Create configs directory
+    - name: create configs directory
       file:
         path: "/etc/prometheus/"
         state: directory
@@ -33,9 +33,9 @@
         group: "{{groupId}}"
         mode: 0755
 
-- name: Install Prometheus
+- name: install prometheus
   block:
-    - name: Download Prometheus binary
+    - name: download prometheus binary
       register: task_result
       unarchive:
         src: "https://github.com/prometheus/prometheus/releases/download/v{{ version }}/prometheus-{{ version }}.linux-amd64.tar.gz"
@@ -45,7 +45,7 @@
       retries: 5
       delay: 10
 
-    - name: Install Prometheus - Copy Prometheus file to bin
+    - name: install prometheus - copy prometheus executable to bin
       copy:
         src: "/tmp/prometheus-{{ version }}.linux-amd64/prometheus"
         dest: "/usr/local/bin/prometheus"
@@ -54,40 +54,44 @@
         mode: 0755
         remote_src: yes
 
-    - name: Delete Prometheus tmp folder
+    - name: delete prometheus tmp folder
       file:
         path: "/tmp/prometheus-{{ version }}.linux-amd64"
         state: absent
         force: yes
 
-- name: Check Prometheus version
+- name: check prometheus version
   block:
-    - name: Get Prometheus version
+    - name: get prometheus version
       shell: "prometheus --version"
       register: _version_output
 
-    - name: Print version
+    - name: print version
       debug:
         msg: "Prometheus version: {{ _version_output.stdout }}"
 
-- name: Configure Prometheus
+- name: configure prometheus
   block:
-    - name: Copy Prometheus config file
+    - name: setup prometheus config
       template:
         src: prometheus.yml.j2
         dest: /etc/prometheus/prometheus.yml
 
-    - name: Specify path to config file
-      shell: prometheus --config.file=/etc/prometheus/prometheus.yml & # restart the process if/when it stops
-      async: 5 # let it run in background
-      poll: 0 # don't wait for it to finish
+    - name: configure prometheus alert rules
+      template:
+        src: ../files/alert_rules.yml
+        dest: /etc/prometheus/alert_rules.yml
 
-- name: Configure Prometheus alert rules
-  template:
-    src: ../files/alert_rules.yml
-    dest: /etc/prometheus/alert_rules.yml
+- name: start prometheus
+  shell: prometheus --config.file=/etc/prometheus/prometheus.yml & # restart the process if/when it stops
+  async: 5 # let it run in background
+  poll: 0 # don't wait for it to finish
 
-- name: "Wait for service UP"
+- name: pause for 5 second wait starting alertmanager
+  pause:
+    seconds: 5
+
+- name: "check if prometheus is accessible"
   uri:
     url: http://127.0.0.1:{{ prometheus_port }}
     status_code: 200

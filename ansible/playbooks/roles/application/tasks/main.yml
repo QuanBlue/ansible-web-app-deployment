@@ -40,7 +40,11 @@
   async: 1000
   poll: 0
 
-- name: "wait for service up"
+- name: pause for 5 second wait starting application
+  pause:
+    seconds: 5
+
+- name: "Check if application is accessible"
   uri:
     url: "{{testing_url}}"
     status_code: 200

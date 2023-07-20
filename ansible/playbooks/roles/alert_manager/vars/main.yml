@@ -1,2 +1,5 @@
 ---
-# vars file for alert_manager
+userId: "alertmanager"
+groupId: "alertmanager"
+version: "0.15.3"
+port: 9093

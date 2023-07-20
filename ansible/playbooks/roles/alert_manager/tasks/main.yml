@@ -1,2 +1,96 @@
 ---
-# tasks file for alert_manager
+- name: pre-install alert-manager
+  become: true
+  block:
+    - name: creating alert-manager user group
+      group: name="{{groupId}}"
+      become: true
+
+    - name: creating alert-manager user
+      user:
+        name: "{{userId}}"
+        group: "{{groupId}}"
+        system: yes
+        shell: "/sbin/nologin"
+        comment: "{{userId}} nologin User"
+        createhome: "no"
+        state: present
+
+    - name: creates data directory
+      file:
+        path: "/data/alertmanager/"
+        state: directory
+        owner: "{{userId}}"
+        group: "{{groupId}}"
+        mode: 0755
+
+    - name: creates config directory
+      file:
+        path: "/etc/alertmanager/"
+        state: directory
+        owner: "{{userId}}"
+        group: "{{groupId}}"
+        mode: 0755
+
+- name: install alert-manager
+  block:
+    - name: download alert-manager
+      register: task_result
+      unarchive:
+        src: "https://github.com/prometheus/alertmanager/releases/download/v{{ version }}/alertmanager-{{ version }}.linux-amd64.tar.gz"
+        dest: /tmp/
+        remote_src: yes
+      until: task_result is succeeded
+      retries: 5
+      delay: 10
+
+    - name: install - copy alert-manager executable to bin
+      copy:
+        src: "/tmp/alertmanager-{{ version }}.linux-amd64/alertmanager"
+        dest: "/usr/local/bin/alertmanager"
+        owner: "{{userId}}"
+        group: "{{groupId}}"
+        remote_src: yes
+        mode: 0755
+
+    - name: delete alert-manager tmp folder
+      file:
+        path: "/tmp/alertmanager-{{ version }}.linux-amd64"
+        state: absent
+
+- name: check alert-manager version
+  block:
+    - name: get alert-manager version
+      shell: "alertmanager --version"
+      register: _version_output
+
+    - name: print version
+      debug:
+        msg: "Alert-manager version: {{ _version_output.stdout }}"
+
+- name: configure alert-manager
+  template:
+    src: alertmanager.yml.j2
+    dest: /etc/alertmanager/alertmanager.yml
+
+- name: start alertmanager
+  command: alertmanager \
+    --config.file=/etc/alertmanager/alertmanager.yml \
+    --storage.path=/data/alertmanager \
+    --log.level=debug
+  async: 10 # let it run in background
+  poll: 0 # don't wait for it to finish
+
+- name: pause for 5 second wait starting alertmanager
+  pause:
+    seconds: 5
+
+- name: check if alertmanager is accessible
+  uri:
+    url: http://localhost:{{ port }}
+    method: GET
+    status_code: 200
+  register: _alertmanager_server_status
+  until: _alertmanager_server_status.status == 200
+  retries: 60
+  delay: 1

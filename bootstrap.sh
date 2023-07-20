@@ -6,6 +6,7 @@ declare -A MACHINE_PORT_MAPPING=(
    [backend]=5000
    [grafana]=4000
    [prometheus]=9090
+   [alert_manager]=9093
 )
 
 NODE_EXPORTER_MACHINES=(

@@ -65,7 +65,11 @@
 - name: flush handlers
   meta: flush_handlers
 
-- name: "wait for service ip"
+- name: pause for 5 second wait starting grafana
+  pause:
+    seconds: 5
+
+- name: "check if grafana is accessible"
   uri:
     url: http://127.0.0.1:{{ port }}
     status_code: 200
