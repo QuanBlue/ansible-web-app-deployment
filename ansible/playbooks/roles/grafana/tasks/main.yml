@@ -1,10 +1,10 @@
 ---
 # https://grafana.com/docs/grafana/latest/setup-grafana/installation/debian/
-- name: Install Grafana
+- name: install grafana
   become: true
   become_user: root
   block:
-    - name: Install required packages
+    - name: install required packages
       register: task_result
       apt:
         name:
@@ -15,7 +15,7 @@
       retries: 5
       delay: 10
 
-    - name: Add Grafana repository signing key
+    - name: add grafana repository signing key
       register: task_result
       apt_key:
         url: https://apt.grafana.com/gpg.key
@@ -25,7 +25,7 @@
       retries: 5
       delay: 10
 
-    - name: Add Grafana repository
+    - name: add grafana repository
       register: task_result
       apt_repository:
         repo: "deb [signed-by=/usr/share/keyrings/grafana.key] https://apt.grafana.com stable main"
@@ -35,7 +35,7 @@
       retries: 5
       delay: 10
 
-    - name: Install Grafana
+    - name: install grafana
       register: task_result
       apt:
         name: grafana
@@ -44,23 +44,28 @@
       retries: 5
       delay: 10
 
-- name: Configure Grafana
+- name: configure grafana
   block:
-    - name: Setup dashboard
+    - name: setup dashboard
       copy:
         src: "dashboard.json"
         dest: "/etc/grafana/provisioning/dashboards/dashboard.json"
 
-    - name: Configure Grafana
+    - name: setup datasource
+      template:
+        src: datasource.yml.j2
+        dest: /etc/grafana/provisioning/datasources/datasource.yml
+
+    - name: configure grafana
       template:
         src: grafana.ini.j2
         dest: /etc/grafana/grafana.ini
       notify: restart_grafana_server
 
-- name: Flush Handlers
+- name: flush handlers
   meta: flush_handlers
 
-- name: "Wait for service UP"
+- name: "wait for service ip"
   uri:
     url: http://127.0.0.1:{{ port }}
     status_code: 200
@@ -69,7 +74,7 @@
   retries: 60
   delay: 1
 
-- name: Change admin password for Grafana GUI
+- name: change admin password for grafana gui
   shell: "grafana-cli admin reset-admin-password {{ grafana_admin_password }}"
   register: _grafana_admin_password
   until: _grafana_admin_password.rc == 0

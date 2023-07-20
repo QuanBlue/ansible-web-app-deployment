@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# declare -A MACHINE_PORT_MAPPING=(
-#    # [<machine>]=<port>
-#    [grafana]=3000
-#    [prometheus]=9090
-#    [node_exporter]=9094
-#    [alert_manager]=9093
-#    [frontend]=3000
-#    [backend]=5000
-# )
-
 declare -A MACHINE_PORT_MAPPING=(
    # [<machine>]=<port>
    [frontend]=3000
@@ -108,7 +98,7 @@ for machine in ${!MACHINE_PORT_MAPPING[@]}; do
       --hostname=${machine} \
       ubuntu-node:18.04
 
-   docker exec -it ${machine} sh -c "mkdir -p /root/.ssh && echo '${rsa_pub}' > /root/.ssh/authorized_keys"
+   docker exec -it ${machine} sh -c "mkdir -p /root/.ssh && echo '${rsa_pub}' > /root/.ssh/authorized_keys -vvv"
 
    info "Complete!"
 

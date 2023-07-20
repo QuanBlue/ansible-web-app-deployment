@@ -1,2 +1,3 @@
 grafana_admin_password: "admin123"
 port: 4000
+prometheus_ip_address: "{{ hostvars[groups['prometheus'][0]]['ansible_host'] }}"

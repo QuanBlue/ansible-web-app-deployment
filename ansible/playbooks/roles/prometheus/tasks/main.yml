@@ -89,7 +89,7 @@
 
 - name: "Wait for service UP"
   uri:
-    url: http://127.0.0.1:{{ port }}
+    url: http://127.0.0.1:{{ prometheus_port }}
     status_code: 200
   register: _prometheus_server_status
   until: _prometheus_server_status.status == 200
