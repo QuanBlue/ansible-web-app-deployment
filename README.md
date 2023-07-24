@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="./assets/ansible.png" alt="icon" width="200"></img>
+  <img src="./assets/ansible-deploy-logo.png" alt="icon" width="200"></img>
   <br>
   <b>Ansible Web application Deployment</b>
 </h1>
