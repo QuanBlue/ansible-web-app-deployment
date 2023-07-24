@@ -1,13 +1,7 @@
 #!/bin/bash
 
-declare -A MACHINE_PORT_MAPPING=(
-   # [<machine>]=<port>
-   [frontend]=3000
-   [backend]=5000
-   [grafana]=4000
-   [prometheus]=9090
-   [alert_manager]=9093
-)
+# Source the environment file to load the variables
+source ./env_vars.sh
 
 NODE_EXPORTER_MACHINES=(
    backend
@@ -51,7 +45,7 @@ info header "Remove old containers"
 info "Removing..."
 echo
 docker rm -f ansible-controller
-for machine in ${!MACHINE_PORT_MAPPING[@]}; do
+for machine in ${!REMOTE_MACHINE_PORT_MAPPING[@]}; do
    docker rm -f $machine
 done
 info "Complete!"
@@ -77,27 +71,19 @@ info "Complete!"
 # Build REMOTE MACHINE container
 info header "Create Remote Machine container"
 info "Building image..."
-docker build -t ubuntu-node:18.04 -f ./dockerfile/Dockerfile-remote-machine .
+docker build -t ubuntu-node:20.04 -f ./dockerfile/Dockerfile-remote-machine .
 info "Complete!"
 
 # Create REMOTE MACHINE container
-for machine in ${!MACHINE_PORT_MAPPING[@]}; do
+for machine in ${!REMOTE_MACHINE_PORT_MAPPING[@]}; do
    info "Creating ${machine} VPS... "
-
-   eval "machine_publish_ports=${MACHINE_PORT_MAPPING[$machine]}"
-
-   # map all port
-   # machine_publish_port_mapping=""
-   # for port in ${machine_publish_ports[@]}; do
-   #    machine_publish_port_mapping+="--publish=${port}:${port} "
-   # done
 
    docker run -itd \
       --name=${machine} \
-      --publish=${MACHINE_PORT_MAPPING[$machine]}:${MACHINE_PORT_MAPPING[$machine]} \
+      --publish=${REMOTE_MACHINE_PORT_MAPPING[$machine]}:${REMOTE_MACHINE_PORT_MAPPING[$machine]} \
       --network=${NETWORK} \
       --hostname=${machine} \
-      ubuntu-node:18.04
+      ubuntu-node:20.04
 
    docker exec -it ${machine} sh -c "mkdir -p /root/.ssh && echo '${rsa_pub}' > /root/.ssh/authorized_keys -vvv"
 

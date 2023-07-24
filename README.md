@@ -1,53 +1,53 @@
 <h1 align="center">
   <img src="./assets/ansible.png" alt="icon" width="200"></img>
   <br>
-  <b>Ansible VPS Generator</b>
+  <b>Ansible Web application Deployment</b>
 </h1>
 
-<p align="center">Helping you auto create Ansible VPS and Ubuntu VPSs  in multi base: EC2, VMachine, Container.., connect them and auto generate Inventory file</p>
+<p align="center">Auto deploy web application with Ansible in multi base: EC2, VMachine, Container,..</p>
 
 <!-- Badges -->
 <p align="center">
-  <a href="https://github.com/QuanBlue/ansible-vps-generator/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/QuanBlue/ansible-vps-generator" alt="contributors" />
+  <a href="https://github.com/QuanBlue/ansible-web-app-deployment/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/QuanBlue/ansible-web-app-deployment" alt="contributors" />
   </a>
   <a href="">
-    <img src="https://img.shields.io/github/last-commit/QuanBlue/ansible-vps-generator" alt="last update" />
+    <img src="https://img.shields.io/github/last-commit/QuanBlue/ansible-web-app-deployment" alt="last update" />
   </a>
-  <a href="https://github.com/QuanBlue/ansible-vps-generator/network/members">
-    <img src="https://img.shields.io/github/forks/QuanBlue/ansible-vps-generator" alt="forks" />
+  <a href="https://github.com/QuanBlue/ansible-web-app-deployment/network/members">
+    <img src="https://img.shields.io/github/forks/QuanBlue/ansible-web-app-deployment" alt="forks" />
   </a>
-  <a href="https://github.com/QuanBlue/ansible-vps-generator/stargazers">
-    <img src="https://img.shields.io/github/stars/QuanBlue/ansible-vps-generator" alt="stars" />
+  <a href="https://github.com/QuanBlue/ansible-web-app-deployment/stargazers">
+    <img src="https://img.shields.io/github/stars/QuanBlue/ansible-web-app-deployment" alt="stars" />
   </a>
-  <a href="https://github.com/QuanBlue/ansible-vps-generator/issues/">
-    <img src="https://img.shields.io/github/issues/QuanBlue/ansible-vps-generator" alt="open issues" />
+  <a href="https://github.com/QuanBlue/ansible-web-app-deployment/issues/">
+    <img src="https://img.shields.io/github/issues/QuanBlue/ansible-web-app-deployment" alt="open issues" />
   </a>
-  <a href="https://github.com/QuanBlue/ansible-vps-generator/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/QuanBlue/ansible-vps-generator.svg" alt="license" />
+  <a href="https://github.com/QuanBlue/ansible-web-app-deployment/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/QuanBlue/ansible-web-app-deployment.svg" alt="license" />
   </a>
 </p>
 
 <p align="center">
   <b>
-    <a href="https://github.com/QuanBlue/ansible-vps-generator">Documentation</a> •
-    <a href="https://github.com/QuanBlue/ansible-vps-generator/issues/">Report Bug</a> •
-    <a href="https://github.com/QuanBlue/ansible-vps-generator/issues/">Request Feature</a>
+    <a href="https://github.com/QuanBlue/ansible-web-app-deployment">Documentation</a> •
+    <a href="https://github.com/QuanBlue/ansible-web-app-deployment/issues/">Report Bug</a> •
+    <a href="https://github.com/QuanBlue/ansible-web-app-deployment/issues/">Request Feature</a>
   </b>
 </p>
 <br/>
 <details open>
 <summary><b>Table of Contents</b></summary>
 
-- [:toolbox: Getting Started](#toolbox-getting-started)
+- [Getting Started](#toolbox-getting-started)
   - [Prerequisites](#prerequisites)
   - [Environment Variables](#environment-variables)
-- [:rocket: Usage](#rocket-usage)
-- [:world_map: Roadmap](#world_map-roadmap)
-- [:busts_in_silhouette: Contributors](#busts_in_silhouette-contributors)
-- [FAQ](#faq)
-- [:sparkles: Credits](#sparkles-credits)
-- [:scroll: License](#scroll-license)
+- [Usage](#rocket-usage)
+- [Roadmap](#world_map-roadmap)
+- [Contributors](#busts_in_silhouette-contributors)
+- [FAQ](#white_question_mark-faq)
+- [Credits](#sparkles-credits)
+- [License](#scroll-license)
 </details>
 
 # :toolbox: Getting Started
@@ -56,21 +56,45 @@
 
 Before proceeding with the installation and usage of this project, ensure that you have the following prerequisites in place:
 
-- **Docker Engine:** Docker provides a consistent and portable environment for running applications in containers. Install [here](https://www.docker.com/get-started/).
 - **Network Connectivity:** Docker requires network connectivity to download images, communicate with containers, and access external resources.
+- Each machine base have its own require
+  - **Container base:**
+    - _Docker Engine_, Install [here](https://www.docker.com/get-started/).
+  - **Virtual machine base:**
+    - _Virtualbox version:_ `>= 7.0.6`, Install [here](https://www.virtualbox.org/wiki/Downloads).
+    - _Vagrant version:_ `>= 2.3.7`, Install [here](https://www.vagrantup.com/downloads).
+    - _Vagrant plugin:_
+      - vagrant-scp:
+        ```
+        vagrant plugin install vagrant-scp`
+        ```
 
 ## Environment Variables
 
 # :rocket: Usage
 
+To deploy this project, with each base, follow these steps:
+
+**Container base:**
+
+```sh
+bash ./container_deploy.sh
+```
+
+**Virtual machine base:**
+
+```sh
+bash ./vmachine_deploy.sh
+```
+
 # :world_map: Roadmap
 
-- [ ] Deploy
+- [x] Deploy
   - [x] Application
-  - [ ] Deploy monitoring and logging components
+  - [x] Deploy monitoring and logging components
 - [ ] Deploy Application on
   - [x] Docker - Container
-  - [ ] Vagrant - VWare
+  - [x] Vagrant - VMachine
   - [ ] AWS - EC2
 
 # :busts_in_silhouette: Contributors
@@ -81,7 +105,7 @@ Before proceeding with the installation and usage of this project, ensure that y
 
 Contributions are always welcome!
 
-# FAQ
+# :white_question_mark: FAQ
 
 - **Question 1:** In real life, do we deploy monitoring and logging components such as Prometheus and grafana in 1 or 2 machines?
 
@@ -121,6 +145,8 @@ It's important to note that the decision should be based on your specific infras
 # :sparkles: Credits
 
 - [Docker](https://www.docker.com/)
+- [Vagrant](https://www.vagrantup.com/)
+- [Virtualbox](https://www.virtualbox.org/)
 - [Ansible](https://www.ansible.com/)
 - Emojis are taken from [here](https://github.com/arvida/emoji-cheat-sheet.com)
 

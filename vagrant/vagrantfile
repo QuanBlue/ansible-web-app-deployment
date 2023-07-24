@@ -1,0 +1,61 @@
+# Grab the name of the default interface
+$default_network_interface = `ip route | awk '/^default/ {printf "%s", $5; exit 0}'`
+
+# Define an array of VM names
+remote_vm_names = {
+   "frontend" => 3000, 
+   "backend" => 5000, 
+   "grafana" => 4000, 
+   "prometheus" => 9090,
+   "alertmanager" => 9093
+}
+# remote_vm_names = ["frontend"]
+
+Vagrant.configure("2") do |config|
+   # ------------------------------------------------------
+   # --------------- Default configurations ---------------
+   # ------------------------------------------------------
+   config.vm.box = "ubuntu/focal64"
+   config.vm.network "private_network", type: "dhcp"   # assign an IP address automatically
+   config.vm.network "public_network", bridge: "#$default_network_interface"  # Use "auto" to automatically select the interface
+   config.vm.provider "virtualbox" do |vbox|
+      vbox.memory = 1024
+      vbox.cpus = 2
+   end
+
+   
+   # ------------------------------------------------------
+   # -------------------- Remote Machine ------------------
+   # ------------------------------------------------------
+   remote_vm_names.each_key do |vm_name|
+      config.vm.define vm_name do |vm|
+         vm.vm.provider "virtualbox" do |vbox|
+            vbox.name = vm_name
+         end
+
+         vm.vm.hostname = vm_name
+         vm.vm.network "forwarded_port", guest: remote_vm_names[vm_name], host: remote_vm_names[vm_name]
+         
+         vm.vm.provision :shell, path: "./bootstrap/remote_machine.sh"
+         vm.vm.provision "file", 
+            source: "./ssh/id_rsa.pub", 
+            destination: "/home/vagrant/.ssh/authorized_keys"
+      end
+   end
+
+   # ------------------------------------------------------
+   # ----------------- Ansible Controller -----------------
+   # ------------------------------------------------------
+   config.vm.define "ansible_controller" do |controller|
+      controller.vm.provider "virtualbox" do |vbox|
+         vbox.name = "ansible_controller"
+      end
+
+      controller.vm.hostname = "ansible-controller"
+
+      controller.vm.provision :shell, path: "./bootstrap/ansible_machine.sh"
+      controller.vm.provision "file", 
+         source: "./ssh/id_rsa", 
+         destination: "/home/vagrant/.ssh/id_rsa"
+   end
+end
