@@ -9,27 +9,6 @@ NODE_EXPORTER_MACHINES=(
 )
 
 NETWORK=${NETWORK:-ansible-net}
-INVENTORY="./ansible/inventories/hosts.ini"
-CONTROLLER_PATH_TO_INVNETORY="/etc/ansible/inventories/hosts.ini"
-CONTROLLER_PATH_TO_PLAYBOOK="/etc/ansible/playbooks/playbook.yml"
-
-# Function to print messages in pretty format
-info() {
-   if [ "$1" = "header" ]; then
-      tput bold       # Sets the text to bold
-      tput setaf 7    # Sets the text color to white (ANSI color code 7)
-      tput setab 2    # Sets the background color to green (ANSI color code 2)
-      printf "\n$2\n" # Prints the message passed as an argument to the function
-      tput sgr0       # Resets text attributes (color, boldness, etc.) to default
-      tput el
-   else
-      tput bold    # Sets the text to bold
-      tput setaf 2 # Sets the text color to green (ANSI color code 2)
-      printf "$1"  # Prints the message passed as an argument to the function without new line
-      tput sgr0    # Resets text attributes (color, boldness, etc.) to default
-      tput el
-   fi
-}
 
 # Function to split string
 split_string() {
@@ -118,7 +97,6 @@ for element in "${ipv4_array[@]}"; do
    echo "machine_name: ${machine_name}"
    echo "machine_ip: ${machine_ip}"
    if [ "${machine_name}" == "backend" ] || [ "${machine_name}" == "frontend" ]; then
-      echo "true"
       node_exporter_inventory+="\n${machine_name}_host ansible_host=${machine_ip}"
    fi
 

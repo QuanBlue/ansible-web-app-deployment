@@ -94,3 +94,4 @@
   until: _alertmanager_server_status.status == 200
   retries: 60
   delay: 1
+  ignore_errors: yes

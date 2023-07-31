@@ -1,23 +1,8 @@
-# Function to print messages in pretty format
-info() {
-   if [ "$1" = "header" ]; then
-      tput bold       # Sets the text to bold
-      tput setaf 7    # Sets the text color to white (ANSI color code 7)
-      tput setab 2    # Sets the background color to green (ANSI color code 2)
-      printf "\n$2\n" # Prints the message passed as an argument to the function
-      tput sgr0       # Resets text attributes (color, boldness, etc.) to default
-      tput el
-   else
-      tput bold    # Sets the text to bold
-      tput setaf 2 # Sets the text color to green (ANSI color code 2)
-      printf "$1"  # Prints the message passed as an argument to the function without new line
-      tput sgr0    # Resets text attributes (color, boldness, etc.) to default
-      tput el
-   fi
-}
+#!/bin/bash
 
 # Source the environment file to load the variables
 source ./env_vars.sh
+
 remote_vm_names=${!REMOTE_MACHINE_PORT_MAPPING[@]}
 
 # change dir

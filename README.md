@@ -39,15 +39,15 @@
 <details open>
 <summary><b>Table of Contents</b></summary>
 
-- [Getting Started](#toolbox-getting-started)
+- [:toolbox: Getting Started](#toolbox-getting-started)
   - [Prerequisites](#prerequisites)
   - [Environment Variables](#environment-variables)
-- [Usage](#rocket-usage)
-- [Roadmap](#world_map-roadmap)
-- [Contributors](#busts_in_silhouette-contributors)
-- [FAQ](#white_question_mark-faq)
-- [Credits](#sparkles-credits)
-- [License](#scroll-license)
+- [:rocket: Usage](#rocket-usage)
+- [:world_map: Roadmap](#world_map-roadmap)
+- [:busts_in_silhouette: Contributors](#busts_in_silhouette-contributors)
+- [:white_question_mark: FAQ](#white_question_mark-faq)
+- [:sparkles: Credits](#sparkles-credits)
+- [:scroll: License](#scroll-license)
 </details>
 
 # :toolbox: Getting Started
@@ -58,6 +58,7 @@ Before proceeding with the installation and usage of this project, ensure that y
 
 - **Network Connectivity:** Docker requires network connectivity to download images, communicate with containers, and access external resources.
 - Each machine base have its own require
+
   - **Container base:**
     - _Docker Engine_, Install [here](https://www.docker.com/get-started/).
   - **Virtual machine base:**
@@ -68,6 +69,16 @@ Before proceeding with the installation and usage of this project, ensure that y
         ```
         vagrant plugin install vagrant-scp`
         ```
+  - **EC2 base:**
+
+    - _AWS CLI_, Install [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+    - AWS config + setup
+      [Get access key](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html)
+      [AWS available region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)
+
+    - Create AWS key pairs for EC2 instance
+    - Create EC2
+    - connect EC2 via SSH
 
 ## Environment Variables
 

@@ -5,6 +5,7 @@
 #   become_method: sudo
 #   roles:
 #     - alertmanager
+
 - hosts: backend
   become: yes
   become_user: root
@@ -13,7 +14,7 @@
     - app_port: 5000
     - server_domain: "{{ hostvars[groups['backend'][0]]['ansible_host'] }}"
     - work_dir: /root/{{ repo_name }}
-    - testing_url: http://{{ server_domain }}:{{ app_port }}/metrics
+    - testing_url: http://{{server_domain}}:{{ app_port }}/metrics
   roles:
     - nodejs
     - application
@@ -28,11 +29,12 @@
     - app_port: 3000
     - server_domain: "{{ hostvars[groups['frontend'][0]]['ansible_host'] }}"
     - work_dir: /root/{{repo_name}}/client
-    - testing_url: http://{{ server_domain }}:{{ app_port }}
+    - testing_url: http://{{server_domain}}:{{ app_port }}
   roles:
     - nodejs
     - application
     - node_exporter
+
 - hosts: prometheus
   gather_facts: true
   become: yes

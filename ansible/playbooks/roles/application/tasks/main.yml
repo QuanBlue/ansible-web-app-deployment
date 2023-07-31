@@ -31,9 +31,11 @@
   delay: 10
 
 - name: rename '.env.example' to '.env'
+  become: true
   command: mv {{work_dir}}/.env.example {{work_dir}}/.env
 
 - name: start the application
+  become: true
   command:
     chdir: "{{work_dir}}"
     cmd: watch -n 0.1 "npm start" & # restart the process if/when it stops
@@ -52,3 +54,4 @@
   until: _res_status.status == 200
   retries: 60
   delay: 1
+  ignore_errors: yes

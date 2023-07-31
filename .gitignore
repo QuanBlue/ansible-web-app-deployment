@@ -1,2 +1,6 @@
 **.vagrant**
-vagrant/ssh
+**/ssh
+
+**/.env
+
+**setting

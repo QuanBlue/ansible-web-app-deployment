@@ -77,6 +77,7 @@
   until: _grafana_server_status.status == 200
   retries: 60
   delay: 1
+  ignore_errors: yes
 
 - name: change admin password for grafana gui
   shell: "grafana-cli admin reset-admin-password {{ grafana_admin_password }}"
