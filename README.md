@@ -39,15 +39,15 @@
 <details open>
 <summary><b>Table of Contents</b></summary>
 
-- [Getting Started](#toolbox-getting-started)
+- [:toolbox: Getting Started](#toolbox-getting-started)
   - [Prerequisites](#prerequisites)
   - [Environment Variables](#environment-variables)
   - [Run Locally](#run-locally)
-- [Usage](#rocket-usage)
-- [Roadmap](#world_map-roadmap)
-- [Contributors](#busts_in_silhouette-contributors)
-- [Credits](#sparkles-credits)
-- [License](#scroll-license)
+- [:rocket: Usage](#rocket-usage)
+- [:world_map: Roadmap](#world_map-roadmap)
+- [:busts_in_silhouette: Contributors](#busts_in_silhouette-contributors)
+- [:sparkles: Credits](#sparkles-credits)
+- [:scroll: License](#scroll-license)
 </details>
 
 # :toolbox: Getting Started
@@ -124,6 +124,19 @@ To deploy this project, with each base, follow these steps:
 
 ```sh
 bash ./container_deploy.sh
+```
+
+You can watch IPv4 address of all container in `ansible-net` network
+
+```sh
+$ docker network inspect --format='{{range .Containers}}{{.Name}}: {{.IPv4Address}}{{"\n"}}{{end}}' ansible-net
+
+ansible-controller: 172.18.0.2/16
+backend: 172.18.0.7/16
+prometheus: 172.18.0.3/16
+alertmanager: 172.18.0.4/16
+grafana: 172.18.0.5/16
+frontend: 172.18.0.6/16
 ```
 
 **Virtual machine base:**

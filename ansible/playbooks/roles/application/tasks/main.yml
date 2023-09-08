@@ -39,12 +39,14 @@
   command:
     chdir: "{{work_dir}}"
     cmd: watch -n 0.1 "npm start" & # restart the process if/when it stops
-  async: 1000
+  async: 3600
   poll: 0
 
-- name: pause for 5 second wait starting application
-  pause:
-    seconds: 5
+- name: Wait for the application to start
+  wait_for:
+    host: "{{server_domain}}"
+    port: "{{app_port}}"
+    timeout: 60
 
 - name: "Check if application is accessible"
   uri:
