@@ -177,8 +177,8 @@ Automatic deploy web application with 3 base: `container`, `virtual machine` and
 
 # :busts_in_silhouette: Contributors
 
-<a href="https://github.com/QuanBlue/Linux-Bootstrap/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=QuanBlue/Linux-Bootstrap" />
+<a href="https://github.com/QuanBlue/ansible-web-app-deployment/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=QuanBlue/ansible-web-app-deployment" />
 </a>
 
 Contributions are always welcome!
